@@ -8,6 +8,7 @@ public class Unit : MonoBehaviour
 
 
 	private Vector3 targetPosition;
+	private GridPosition gridPosition;
 	[SerializeField] private Transform visualSelect;
 
 	private void Awake()
@@ -18,7 +19,9 @@ public class Unit : MonoBehaviour
 
 	private void Start()
 	{
-		LevelGrid.Instance.SetUnitAtGridPosition(this, transform.position);
+		gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+		LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
+
 	}
 
 	private void Update()
@@ -40,6 +43,17 @@ public class Unit : MonoBehaviour
 		{
 			// unitAnimator.SetBool("IsWalking", false);
 		}
+
+		GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
+
+		if (newGridPosition != gridPosition)
+		{
+			// Unit changed Grid Position
+			Debug.Log("Unit changed Grid Position");
+			LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
+			gridPosition = newGridPosition;
+		}
+
 	}
 
 	public void Move(Vector3 targetPosition)

@@ -47,6 +47,7 @@ public class GridSystem
 
 	public void CreateDebugObjects(Transform debugPrefab)
 	{
+
 		for (int x = 0; x < width; x++)
 		{
 			for (int z = 0; z < height; z++)
