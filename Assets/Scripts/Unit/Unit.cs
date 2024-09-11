@@ -37,11 +37,11 @@ public class Unit : MonoBehaviour
 			float rotateSpeed = 10f;
 			transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
 
-			// unitAnimator.SetBool("IsWalking", true);
+			unitAnimator.SetBool("IsWalking", true);
 		}
 		else
 		{
-			// unitAnimator.SetBool("IsWalking", false);
+			unitAnimator.SetBool("IsWalking", false);
 		}
 
 		GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
