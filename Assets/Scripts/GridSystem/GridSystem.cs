@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class GridSystem
 {
-	
 	private int width;
 	private int height;
 	private float cellSize;
@@ -60,6 +58,5 @@ public class GridSystem
 	{
 		return gridObjectArray[gridPosition.x, gridPosition.z];
 	}
-
 
 }
