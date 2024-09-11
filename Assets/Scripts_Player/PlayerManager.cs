@@ -40,7 +40,17 @@ public class PlayerManager : MonoBehaviour
 			OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
 		}
 
-		if (Input.GetMouseButtonDown(1)) { }
+		if (Input.GetMouseButtonDown(1)) // RMB
+		{
+			if (selectedUnit != null) // Move Unit to mouse position
+			{
+				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue))
+				{
+					selectedUnit.Move(hit.point);
+				}
+			}
+		}
 	}
 
 }
