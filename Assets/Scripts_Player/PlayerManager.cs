@@ -26,6 +26,7 @@ public class PlayerManager : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0)) // LMB 
 		{
+			if (selectedUnit != null) selectedUnit.OnDeselected();
 			selectedUnit = null; // Clear selected unit
 
 			// Raycast from mouse position to get unit
@@ -33,7 +34,7 @@ public class PlayerManager : MonoBehaviour
 			if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, unitLayerMask))
 			{
 				if (!hit.transform.TryGetComponent<Unit>(out selectedUnit)) return;
-				hit.transform.TryGetComponent<Unit>(out selectedUnit);
+				selectedUnit.OnSelected();
 
 			}
 
