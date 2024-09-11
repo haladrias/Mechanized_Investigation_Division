@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
 	public Unit CurrentSelectedUnit => selectedUnit;
 
 	public LayerMask unitLayerMask;
+	[SerializeField] private LayerMask mouseLayerMask;
 	public event EventHandler OnSelectedUnitChanged;
 
 	private void Awake()
@@ -46,9 +47,11 @@ public class PlayerManager : MonoBehaviour
 			if (selectedUnit != null) // Move Unit to mouse position
 			{
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-				if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue))
+				if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mouseLayerMask))
 				{
-					selectedUnit.Move(hit.point);
+
+					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
+					selectedUnit.Move(targetPosition);
 				}
 			}
 		}

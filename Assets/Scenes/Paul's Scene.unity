@@ -679,6 +679,9 @@ MonoBehaviour:
   unitLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  mouseLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &1274080965
 Transform:
   m_ObjectHideFlags: 0
