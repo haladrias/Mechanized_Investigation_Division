@@ -10,6 +10,7 @@ public class GridObject
 
 	private GridSystem gridSystem;
 	private GridPosition gridPosition;
+	private Unit unit;
 
 	public GridObject(GridSystem gridSystem, GridPosition gridPosition)
 	{
@@ -17,9 +18,19 @@ public class GridObject
 		this.gridPosition = gridPosition;
 	}
 
+	public void SetUnit(Unit unit)
+	{
+		this.unit = unit;
+	}
+
+	public Unit GetUnit()
+	{
+		return unit;
+	}
+
 	public override string ToString()
 	{
-		return gridPosition.ToString();
+		return $"{gridPosition}\n{unit}";
 	}
 
 }

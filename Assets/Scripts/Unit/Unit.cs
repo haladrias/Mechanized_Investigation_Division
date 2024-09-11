@@ -16,6 +16,11 @@ public class Unit : MonoBehaviour
 		OnDeselected();
 	}
 
+	private void Start()
+	{
+		LevelGrid.Instance.SetUnitAtGridPosition(this, transform.position);
+	}
+
 	private void Update()
 	{
 
