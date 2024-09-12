@@ -6,7 +6,7 @@ public class Unit : MonoBehaviour
 {
 	[SerializeField] private Animator unitAnimator;
 	[SerializeField] private Transform visualSelect;
-	private GridPosition gridPosition;
+	public GridPosition gridPosition { get; private set; }
 	public MoveAction MoveAction { get; private set; }
 
 	private void Awake()

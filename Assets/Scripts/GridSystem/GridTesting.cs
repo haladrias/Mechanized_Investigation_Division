@@ -8,5 +8,13 @@ using UnityEngine;
 /// </summary>
 public class GridTesting : MonoBehaviour
 {
+	public Unit unit;
 
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.T))
+		{
+			unit.MoveAction.GetValidGridPositionList();
+		}
+	}
 }
