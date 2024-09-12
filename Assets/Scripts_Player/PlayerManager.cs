@@ -51,7 +51,7 @@ public class PlayerManager : MonoBehaviour
 				{
 
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
-					selectedUnit.Move(targetPosition);
+					selectedUnit.MoveAction.Move(targetPosition);
 				}
 			}
 		}
