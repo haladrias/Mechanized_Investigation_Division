@@ -14,7 +14,8 @@ public class GridTesting : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.T))
 		{
-			unit.SpinAction.Spin();
+			PlayerManager.Instance.SetIsBusy();
+			unit.SpinAction.Spin(PlayerManager.Instance.SetIsNotBusy);
 		}
 	}
 }

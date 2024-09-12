@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,11 +22,13 @@ public class SpinAction : BaseAction
 		{
 			isActive = false;
 			totalSpinAmount = 0;
+			onActionComplete?.Invoke();
 		}
 	}
 
-	public void Spin()
+	public void Spin(Action onActionComplete)
 	{
+		this.onActionComplete = onActionComplete;
 		isActive = true;
 	}
 

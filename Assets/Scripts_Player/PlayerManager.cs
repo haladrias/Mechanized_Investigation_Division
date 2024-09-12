@@ -12,10 +12,11 @@ public class PlayerManager : MonoBehaviour
 	public LayerMask unitLayerMask;
 	[SerializeField] private LayerMask mouseLayerMask;
 	public event EventHandler OnSelectedUnitChanged;
-
+	private bool IsBusy;
 	private void Awake()
 	{
 		Instance = this;
+		IsBusy = false;
 	}
 
 	private void OnEnable()
@@ -25,6 +26,7 @@ public class PlayerManager : MonoBehaviour
 
 	private void Update()
 	{
+
 		if (Input.GetMouseButtonDown(0)) // LMB 
 		{
 			if (selectedUnit != null) selectedUnit.OnDeselected();
@@ -44,6 +46,8 @@ public class PlayerManager : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(1)) // RMB
 		{
+			if (IsBusy) return;
+			SetIsBusy();
 			if (selectedUnit != null) // Move Unit to mouse position
 			{
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -52,10 +56,13 @@ public class PlayerManager : MonoBehaviour
 
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
 					GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(targetPosition);
-					selectedUnit.MoveAction.Move(gridPosition);
+					selectedUnit.MoveAction.Move(gridPosition, SetIsNotBusy);
 				}
 			}
 		}
 	}
+
+	public void SetIsBusy() => IsBusy = true;
+	public void SetIsNotBusy() => IsBusy = false;
 
 }
