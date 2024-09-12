@@ -20,7 +20,7 @@ public class MoveAction : BaseAction
 
 	public override void Update()
 	{
-		base.Update();
+		if (!isActive) return;
 		if (!moveRequested) return;
 		float stoppingDistance = .1f;
 		Vector3 moveDirection = (targetPosition - unit.transform.position).normalized;

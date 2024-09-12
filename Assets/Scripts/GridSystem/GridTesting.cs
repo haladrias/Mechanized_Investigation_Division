@@ -14,10 +14,7 @@ public class GridTesting : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.T))
 		{
-			foreach (var item in unit.MoveAction.GetValidGridPositionList())
-			{
-				Debug.Log("Valid Grid Position: " + item.x + " " + item.z);
-			}
+			unit.SpinAction.Spin();
 		}
 	}
 }

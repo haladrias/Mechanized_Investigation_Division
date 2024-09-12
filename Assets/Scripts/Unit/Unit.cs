@@ -8,11 +8,13 @@ public class Unit : MonoBehaviour
 	[SerializeField] private Transform visualSelect;
 	public GridPosition gridPosition { get; private set; }
 	public MoveAction MoveAction { get; private set; }
+	public SpinAction SpinAction { get; private set; }
 
 	private void Awake()
 	{
 		OnDeselected();
 		MoveAction = new MoveAction(this, unitAnimator);
+		SpinAction = new SpinAction(this);
 	}
 
 	private void Start()
@@ -25,6 +27,7 @@ public class Unit : MonoBehaviour
 	private void Update()
 	{
 		MoveAction.Update();
+		SpinAction.Update();
 		GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
 
 		if (newGridPosition != gridPosition)
