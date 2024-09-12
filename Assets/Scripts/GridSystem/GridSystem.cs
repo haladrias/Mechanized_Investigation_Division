@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 public class GridSystem
 {
-	private int width;
-	private int height;
+	public int Width { get; private set; }
+	public int Height { get; private set; }
 	private float cellSize;
 	private GridObject[,] gridObjectArray;
 
 	public GridSystem(int width, int height, float cellSize)
 	{
-		this.width = width;
-		this.height = height;
+		this.Width = width;
+		this.Height = height;
 		this.cellSize = cellSize;
 
 		gridObjectArray = new GridObject[width, height];
@@ -45,16 +45,17 @@ public class GridSystem
 		);
 	}
 
-	public void CreateDebugObjects(Transform debugPrefab)
+	public void CreateDebugObjects(Transform debugPrefab, Transform parent)
 	{
 
-		for (int x = 0; x < width; x++)
+		for (int x = 0; x < Width; x++)
 		{
-			for (int z = 0; z < height; z++)
+			for (int z = 0; z < Height; z++)
 			{
 				GridPosition gridPosition = new GridPosition(x, z);
 
 				Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
+				debugTransform.parent = parent;
 				GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
 				gridDebugObject.SetGridObject(GetGridObject(gridPosition));
 			}
@@ -69,7 +70,7 @@ public class GridSystem
 
 	public bool IsValidGridPosition(GridPosition gridPosition)
 	{
-		return gridPosition.x >= 0 && gridPosition.x < width && gridPosition.z >= 0 && gridPosition.z < height;
+		return gridPosition.x >= 0 && gridPosition.x < Width && gridPosition.z >= 0 && gridPosition.z < Height;
 	}
 
 }

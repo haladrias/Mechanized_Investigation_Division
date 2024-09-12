@@ -30,7 +30,6 @@ public class Unit : MonoBehaviour
 		if (newGridPosition != gridPosition)
 		{
 			// Unit changed Grid Position
-			Debug.Log("Unit changed Grid Position");
 			LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
 			gridPosition = newGridPosition;
 		}

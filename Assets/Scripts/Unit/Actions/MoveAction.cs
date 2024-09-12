@@ -11,7 +11,7 @@ public class MoveAction
 
 	private Vector3 targetPosition;
 
-	public MoveAction(Unit unit, Animator unitAnimator, int maxMoveDistance = 3)
+	public MoveAction(Unit unit, Animator unitAnimator, int maxMoveDistance = 2)
 	{
 		this.unit = unit;
 		this.unitAnimator = unitAnimator;
@@ -62,16 +62,20 @@ public class MoveAction
 
 		GridPosition currentGridPos = unit.gridPosition;
 
-		for (int x = -maxMoveDistance; x < maxMoveDistance; x++)
+
+		for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
 		{
-			for (int z = -maxMoveDistance; z < maxMoveDistance; z++)
+			for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
 			{
 				GridPosition offset = new GridPosition(x, z);
 				GridPosition newGridPos = currentGridPos + offset;
-				// Debug.Log($"Checking Grid Position: {newGridPos}");
-				if (!LevelGrid.Instance.IsValidGridPosition(newGridPos)) continue; // Check if the grid position is valid
-				if (newGridPos == unit.gridPosition) continue; // Check if the grid position is the same as the unit's current grid position
-				if (LevelGrid.Instance.IsGridPositionOccupied(newGridPos)) continue; // Check if the grid position is occupied
+
+				if (!LevelGrid.Instance.IsValidGridPosition(newGridPos)) continue; // Check if the grid position is vali
+
+				if (newGridPos == currentGridPos) continue; // Check if the grid position is the same as the unit's current grid positio
+
+				if (LevelGrid.Instance.IsGridPositionOccupied(newGridPos)) continue; // Check if the grid position is occupie
+
 
 				validGridPos.Add(newGridPos);
 			}
