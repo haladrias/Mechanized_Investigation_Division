@@ -8,8 +8,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Vector2 camLimit;
 
     [SerializeField] private float scrollSpeed = 20f;
-    [SerializeField] private float minY = 20f;
-    [SerializeField] private float maxY = 120f;
+    [SerializeField] private float minY = 3f;
+    [SerializeField] private float maxY = 20;
 
     void Start()
     {
@@ -19,9 +19,9 @@ public class CameraController : MonoBehaviour
     void Update()
     {
         Vector3 position = transform.position;
-
         if (Input.GetKey("w") || Input.GetKey("up") || Input.mousePosition.y >= Screen.height - camBorderThickness)
         {
+
             position.z += camSpeed * Time.deltaTime;
         }
         if (Input.GetKey("s") || Input.GetKey("down") || Input.mousePosition.y <= camBorderThickness)
@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
         }
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        position.y -= scrollSpeed * 100f * Time.deltaTime;
+        position.y -= scroll * scrollSpeed * 50f * Time.deltaTime;
 
         position.x = Mathf.Clamp(position.x, -camLimit.x, camLimit.x);
         position.y = Mathf.Clamp(position.y, minY, maxY);
