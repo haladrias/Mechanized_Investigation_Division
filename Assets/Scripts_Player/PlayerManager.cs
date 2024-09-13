@@ -2,16 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerManager : MonoBehaviour
 {
 	public static PlayerManager Instance { get; private set; }
 	public event EventHandler OnSelectedUnitChanged;
+	public event EventHandler<SelectedActionChangedEventArgs> OnSelectedActionChanged;
+	public class SelectedActionChangedEventArgs : EventArgs
+	{
+		public BaseAction selectedAction;
+	}
+
+	public LayerMask unitLayerMask;
+	[SerializeField] private LayerMask mouseLayerMask;
 
 	private Unit selectedUnit;
 	public Unit CurrentSelectedUnit => selectedUnit;
-	public LayerMask unitLayerMask;
-	[SerializeField] private LayerMask mouseLayerMask;
+	public BaseAction SelectedAction { get; private set; }
+
 
 	private bool IsBusy;
 	private void Awake()
@@ -23,6 +32,7 @@ public class PlayerManager : MonoBehaviour
 	private void OnEnable()
 	{
 		OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
 	}
 
 	private void Update()
@@ -30,6 +40,8 @@ public class PlayerManager : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(0)) // LMB 
 		{
+			if (EventSystem.current.IsPointerOverGameObject()) return; // If mouse is over UI, return
+
 			if (selectedUnit != null) selectedUnit.OnDeselected();
 			selectedUnit = null; // Clear selected unit
 
@@ -37,7 +49,12 @@ public class PlayerManager : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, unitLayerMask))
 			{
-				if (!hit.transform.TryGetComponent<Unit>(out selectedUnit)) return;
+				if (!hit.transform.TryGetComponent<Unit>(out selectedUnit))
+				{
+					SelectedAction = null;
+					OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
+					return;
+				};
 				selectedUnit.OnSelected();
 
 			}
@@ -57,7 +74,8 @@ public class PlayerManager : MonoBehaviour
 
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
 					GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(targetPosition);
-					selectedUnit.MoveAction.Move(gridPosition, SetIsNotBusy);
+					// selectedUnit.MoveAction.TakeAction(gridPosition, SetIsNotBusy);
+					SelectedAction.TakeAction(gridPosition, SetIsNotBusy);
 				}
 			}
 		}
@@ -65,5 +83,29 @@ public class PlayerManager : MonoBehaviour
 
 	public void SetIsBusy() => IsBusy = true;
 	public void SetIsNotBusy() => IsBusy = false;
+	public void SetSelectedAction(BaseAction action)
+	{
+		if (action == SelectedAction) return;
+
+		SelectedAction = action;
+		GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
+		switch (SelectedAction)
+		{
+			case MoveAction moveAction:
+				Debug.Log("Move Action Selected");
+				break;
+			case SpinAction spinAction:
+				Debug.Log("Spin Action Selected");
+				break;
+		}
+		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
+	}
+
+	// public void TakeAction()
+	// {
+	// 	if (selectedAction == null) return;
+
+	// 	selectedAction.
+	// }
 
 }

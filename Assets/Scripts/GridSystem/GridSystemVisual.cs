@@ -5,38 +5,57 @@ using UnityEngine;
 
 public class GridSystemVisual : MonoBehaviour
 {
+	public static GridSystemVisual Instance { get; private set; }
 	[SerializeField] private Transform debugPrefab;
 
 	private Transform[,] visualGrid;
-	private bool IsUnitSelected = false;
+	private bool ShowGrid = false;
+
+	private void Awake()
+	{
+		Instance = this;
+
+	}
 	private void Start()
 	{
 		SpawnGridVisuals();
 
-		PlayerManager.Instance.OnSelectedUnitChanged += OnSelectedUnitChanged;
-	}
-
-	private void OnSelectedUnitChanged(object sender, EventArgs e)
-	{
 		HideGridVisuals();
-		Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
-		if (selectedUnit == null)
-		{
-			IsUnitSelected = false;
-			return;
-		}
-		ShowGridPositionList(selectedUnit.MoveAction.GetValidGridPositionList());
-		IsUnitSelected = true;
-
 	}
+
+	public void ToggleGridVisual(bool flag)
+	{
+
+		if (flag)
+		{
+			EnableGridVisual();
+		}
+		else
+		{
+			DisableGridVisual();
+		}
+	}
+
+	private void EnableGridVisual()
+	{
+		ShowGridPositionList(PlayerManager.Instance.SelectedAction.GetValidGridPositionList());
+		ShowGrid = true;
+	}
+
+	private void DisableGridVisual()
+	{
+		ShowGrid = false;
+		HideGridVisuals();
+	}
+
 
 	private void Update()
 	{
-		if (IsUnitSelected) // TODO: Refactor to only when neccessary
+		if (ShowGrid) // TODO: Refactor to only when neccessary
 		{
 			HideGridVisuals();
-			Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
-			ShowGridPositionList(selectedUnit.MoveAction.GetValidGridPositionList());
+
+			ShowGridPositionList(PlayerManager.Instance.SelectedAction.GetValidGridPositionList());
 		}
 	}
 

@@ -7,6 +7,7 @@ public abstract class BaseAction
 {
 	protected readonly Unit unit;
 	protected bool isActive = false;
+	public bool ShowGrid { get; protected set; }
 	protected Action onActionComplete;
 
 	public BaseAction(Unit unit)
@@ -19,5 +20,13 @@ public abstract class BaseAction
 	{
 
 	}
+	public bool IsValidGridPositionAction(GridPosition gridPosition)
+	{
+		List<GridPosition> validGridPositionList = GetValidGridPositionList();
+		return validGridPositionList.Contains(gridPosition);
+	}
+	public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
+
+	public abstract List<GridPosition> GetValidGridPositionList();
 
 }

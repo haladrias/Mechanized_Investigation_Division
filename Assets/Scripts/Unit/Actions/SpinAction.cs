@@ -8,6 +8,7 @@ public class SpinAction : BaseAction
 	private float totalSpinAmount;
 	public SpinAction(Unit unit) : base(unit)
 	{
+		ShowGrid = true;
 	}
 
 	public override void Update()
@@ -26,13 +27,20 @@ public class SpinAction : BaseAction
 		}
 	}
 
-	public void Spin(Action onActionComplete)
+	public override string ToString()
+	{
+		return $"Spin";
+	}
+
+	public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
 	{
 		this.onActionComplete = onActionComplete;
 		isActive = true;
 	}
-	public override string ToString()
+
+	public override List<GridPosition> GetValidGridPositionList()
 	{
-		return $"Spin";
+		GridPosition unitGridPos = unit.gridPosition;
+		return new List<GridPosition> { unitGridPos };
 	}
 }
