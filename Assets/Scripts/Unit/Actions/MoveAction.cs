@@ -85,4 +85,10 @@ public class MoveAction : BaseAction
 
 		return validGridPos;
 	}
+
+	public override string ToString()
+	{
+		return $"Move";
+	}
+
 }

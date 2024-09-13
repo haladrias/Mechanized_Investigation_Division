@@ -31,5 +31,8 @@ public class SpinAction : BaseAction
 		this.onActionComplete = onActionComplete;
 		isActive = true;
 	}
-
+	public override string ToString()
+	{
+		return $"Spin";
+	}
 }

@@ -6,12 +6,13 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
 	public static PlayerManager Instance { get; private set; }
+	public event EventHandler OnSelectedUnitChanged;
+
 	private Unit selectedUnit;
 	public Unit CurrentSelectedUnit => selectedUnit;
-
 	public LayerMask unitLayerMask;
 	[SerializeField] private LayerMask mouseLayerMask;
-	public event EventHandler OnSelectedUnitChanged;
+
 	private bool IsBusy;
 	private void Awake()
 	{
