@@ -13,6 +13,11 @@ public class PlayerManager : MonoBehaviour
 	{
 		public BaseAction selectedAction;
 	}
+	public event EventHandler<BusyChangedEventArgs> OnBusyChanged;
+	public class BusyChangedEventArgs : EventArgs
+	{
+		public bool isBusy;
+	}
 
 	public LayerMask unitLayerMask;
 	[SerializeField] private LayerMask mouseLayerMask;
@@ -81,23 +86,32 @@ public class PlayerManager : MonoBehaviour
 		}
 	}
 
-	public void SetIsBusy() => IsBusy = true;
-	public void SetIsNotBusy() => IsBusy = false;
+	public void SetIsBusy()
+	{
+		IsBusy = true;
+		OnBusyChanged?.Invoke(this, new BusyChangedEventArgs { isBusy = IsBusy });
+	}
+	public void SetIsNotBusy()
+	{
+		IsBusy = false;
+		OnBusyChanged?.Invoke(this, new BusyChangedEventArgs { isBusy = IsBusy });
+	}
 	public void SetSelectedAction(BaseAction action)
 	{
-		if (SelectedAction != null)
-			GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
-		if (action == SelectedAction) return;
+		// if (SelectedAction != null)
+
+		// if (action == SelectedAction) return;
 		SelectedAction = action;
-		switch (SelectedAction)
-		{
-			case MoveAction moveAction:
-				Debug.Log("Move Action Selected");
-				break;
-			case SpinAction spinAction:
-				Debug.Log("Spin Action Selected");
-				break;
-		}
+		GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
+		// switch (SelectedAction)
+		// {
+		// 	case MoveAction moveAction:
+		// 		Debug.Log("Move Action Selected");
+		// 		break;
+		// 	case SpinAction spinAction:
+		// 		Debug.Log("Spin Action Selected");
+		// 		break;
+		// }
 		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
 	}
 

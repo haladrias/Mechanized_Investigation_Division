@@ -28,7 +28,7 @@ public class GridSystemVisual : MonoBehaviour
 	{
 		if (PlayerManager.Instance.CurrentSelectedUnit == null)
 		{
-			Debug.Log("No selected unit");
+			// Debug.Log("No selected unit");
 			DisableGridVisual();
 		}
 	}
@@ -48,7 +48,7 @@ public class GridSystemVisual : MonoBehaviour
 
 	private void EnableGridVisual()
 	{
-		Debug.Log("Enable grid visual");
+		// Debug.Log("Enable grid visual");
 		ShowGridPositionList(PlayerManager.Instance.SelectedAction.GetValidGridPositionList());
 		ShowGrid = true;
 	}

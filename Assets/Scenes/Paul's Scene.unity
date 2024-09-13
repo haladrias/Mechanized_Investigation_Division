@@ -2310,7 +2310,7 @@ MonoBehaviour:
   mouseLayerMask:
     serializedVersion: 2
     m_Bits: 8
-  debugObjectParent: {fileID: 0}
+  debugObjectParent: {fileID: 8598504}
 --- !u!1 &1856741748
 GameObject:
   m_ObjectHideFlags: 0
