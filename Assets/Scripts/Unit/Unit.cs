@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,28 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
 	[SerializeField] private Animator unitAnimator;
-
-
-	private Vector3 targetPosition;
-	private GridPosition gridPosition;
 	[SerializeField] private Transform visualSelect;
+	[SerializeField] private Transform cameraPortfolio;
+	public GridPosition gridPosition { get; private set; }
+
+	public List<BaseAction> baseActionArray;
+	public MoveAction MoveAction { get; private set; }
+	public SpinAction SpinAction { get; private set; }
+
+	public event EventHandler<ActionPointsChangedEventArgs> OnActionPointsChanged;
+	public class ActionPointsChangedEventArgs : EventArgs
+	{
+		public int actionPoints;
+	}
+	[SerializeField] private int actionPoints = 2;
 
 	private void Awake()
 	{
-		targetPosition = transform.position;
 		OnDeselected();
+
+		MoveAction = new MoveAction(this, unitAnimator);
+		SpinAction = new SpinAction(this);
+		baseActionArray = new List<BaseAction> { MoveAction, SpinAction };
 	}
 
 	private void Start()
@@ -26,49 +39,57 @@ public class Unit : MonoBehaviour
 
 	private void Update()
 	{
-
-		float stoppingDistance = .1f;
-		if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
-		{
-			Vector3 moveDirection = (targetPosition - transform.position).normalized;
-			float moveSpeed = 4f;
-			transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-			float rotateSpeed = 10f;
-			transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
-
-			unitAnimator.SetBool("IsWalking", true);
-		}
-		else
-		{
-			unitAnimator.SetBool("IsWalking", false);
-		}
-
+		MoveAction.Update();
+		SpinAction.Update();
 		GridPosition newGridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
 
 		if (newGridPosition != gridPosition)
 		{
 			// Unit changed Grid Position
-			Debug.Log("Unit changed Grid Position");
 			LevelGrid.Instance.UnitMovedGridPosition(this, gridPosition, newGridPosition);
 			gridPosition = newGridPosition;
 		}
 
 	}
 
-	public void Move(Vector3 targetPosition)
+	public bool TrySpendActionPoints(BaseAction action)
 	{
-		this.targetPosition = targetPosition;
+		if (CanSpendActionPoints(action))
+		{
+			SpendActionPoints(action.ActionPointsCost);
+			return true;
+		}
+		return false;
 	}
+
+	public bool CanSpendActionPoints(BaseAction action)
+	{
+		if (actionPoints >= action.ActionPointsCost)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private void SpendActionPoints(int amount)
+	{
+		actionPoints -= amount;
+		OnActionPointsChanged?.Invoke(this, new ActionPointsChangedEventArgs { actionPoints = actionPoints });
+	}
+
+	public int ActionPoints => actionPoints;
+
 
 	public void OnSelected()
 	{
 		visualSelect.gameObject.SetActive(true);
+		cameraPortfolio.gameObject.SetActive(true);
 	}
 
 	public void OnDeselected()
 	{
 		visualSelect.gameObject.SetActive(false);
+		cameraPortfolio.gameObject.SetActive(false);
 	}
 
 }

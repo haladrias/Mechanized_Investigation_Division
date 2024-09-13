@@ -9,7 +9,7 @@ public class TestCombatUI : MonoBehaviour
 	public TextMeshProUGUI SelectedUnitName;
 	private void Start()
 	{
-		PlayerManager.Instance.OnSelectedUnitChanged += PlayerManager_OnSelectedUnitChanged;
+		PlayerManager.Instance.OnUnitSelected += PlayerManager_OnSelectedUnitChanged;
 	}
 
 	private void PlayerManager_OnSelectedUnitChanged(object sender, EventArgs e)

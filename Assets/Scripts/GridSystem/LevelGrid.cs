@@ -7,7 +7,8 @@ public class LevelGrid : MonoBehaviour
 	public static LevelGrid Instance { get; private set; }
 	[SerializeField] private Transform gridDebugObjectPrefab;
 	[SerializeField] private LayerMask mouseLayerMask;
-
+	[SerializeField] private Transform debugObjectParent;
+	public Transform DebugObjectParent { get { return debugObjectParent; } }
 
 	private GridSystem gridSystem;
 
@@ -18,10 +19,8 @@ public class LevelGrid : MonoBehaviour
 	}
 	private void Start()
 	{
-
-
 		// Create debug objects (For testing purposes)
-		gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
+		gridSystem.CreateDebugObjects(gridDebugObjectPrefab, debugObjectParent);
 	}
 
 	public void AddUnitAtGridPosition(GridPosition gridPosition, Unit unit)
@@ -44,7 +43,6 @@ public class LevelGrid : MonoBehaviour
 
 	public void UnitMovedGridPosition(Unit unit, GridPosition fromGridPosition, GridPosition toGridPosition)
 	{
-		Debug.Log($"Unit moved from {fromGridPosition} to {toGridPosition}");
 		RemoveUnitAtGridPosition(fromGridPosition, unit);
 
 		AddUnitAtGridPosition(toGridPosition, unit);
@@ -65,6 +63,18 @@ public class LevelGrid : MonoBehaviour
 		return gridSystem.GetWorldPosition(worldPosition);
 	}
 
+	public bool IsValidGridPosition(GridPosition gridPosition)
+	{
+		return gridSystem.IsValidGridPosition(gridPosition);
+	}
+
+	public bool IsGridPositionOccupied(GridPosition gridPosition)
+	{
+		return gridSystem.GetGridObject(gridPosition).HasAnyUnit();
+	}
+
+	public int GetWidth() { return gridSystem.Width; }
+	public int GetHeight() { return gridSystem.Height; }
 
 
 
