@@ -85,10 +85,10 @@ public class PlayerManager : MonoBehaviour
 	public void SetIsNotBusy() => IsBusy = false;
 	public void SetSelectedAction(BaseAction action)
 	{
+		if (SelectedAction != null)
+			GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
 		if (action == SelectedAction) return;
-
 		SelectedAction = action;
-		GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
 		switch (SelectedAction)
 		{
 			case MoveAction moveAction:

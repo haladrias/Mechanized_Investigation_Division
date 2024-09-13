@@ -18,9 +18,19 @@ public class GridSystemVisual : MonoBehaviour
 	}
 	private void Start()
 	{
+		PlayerManager.Instance.OnSelectedUnitChanged += Instance_OnSelectedUnitChanged;
 		SpawnGridVisuals();
 
 		HideGridVisuals();
+	}
+
+	private void Instance_OnSelectedUnitChanged(object sender, EventArgs e)
+	{
+		if (PlayerManager.Instance.CurrentSelectedUnit == null)
+		{
+			Debug.Log("No selected unit");
+			DisableGridVisual();
+		}
 	}
 
 	public void ToggleGridVisual(bool flag)
@@ -38,6 +48,7 @@ public class GridSystemVisual : MonoBehaviour
 
 	private void EnableGridVisual()
 	{
+		Debug.Log("Enable grid visual");
 		ShowGridPositionList(PlayerManager.Instance.SelectedAction.GetValidGridPositionList());
 		ShowGrid = true;
 	}
