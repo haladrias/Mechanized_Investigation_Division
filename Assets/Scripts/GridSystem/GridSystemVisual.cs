@@ -18,7 +18,7 @@ public class GridSystemVisual : MonoBehaviour
 	}
 	private void Start()
 	{
-		PlayerManager.Instance.OnSelectedUnitChanged += Instance_OnSelectedUnitChanged;
+		PlayerManager.Instance.OnUnitSelected += Instance_OnSelectedUnitChanged;
 		SpawnGridVisuals();
 
 		HideGridVisuals();

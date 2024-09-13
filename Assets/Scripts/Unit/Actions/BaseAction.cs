@@ -9,11 +9,13 @@ public abstract class BaseAction
 	protected bool isActive = false;
 	public bool ShowGrid { get; protected set; }
 	protected Action onActionComplete;
+	public int ActionPointsCost { get; protected set; }
 
 	public BaseAction(Unit unit)
 	{
 		this.unit = unit;
 		isActive = false;
+		ActionPointsCost = 1;
 	}
 
 	public virtual void Update()

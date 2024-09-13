@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,15 +7,19 @@ public class Unit : MonoBehaviour
 {
 	[SerializeField] private Animator unitAnimator;
 	[SerializeField] private Transform visualSelect;
+	[SerializeField] private Transform cameraPortfolio;
 	public GridPosition gridPosition { get; private set; }
 
 	public List<BaseAction> baseActionArray;
 	public MoveAction MoveAction { get; private set; }
 	public SpinAction SpinAction { get; private set; }
 
-	// Add Unit Mech Portrait
-	// Add Weapon Info
-	// Add Mech Info
+	public event EventHandler<ActionPointsChangedEventArgs> OnActionPointsChanged;
+	public class ActionPointsChangedEventArgs : EventArgs
+	{
+		public int actionPoints;
+	}
+	[SerializeField] private int actionPoints = 2;
 
 	private void Awake()
 	{
@@ -47,16 +52,44 @@ public class Unit : MonoBehaviour
 
 	}
 
+	public bool TrySpendActionPoints(BaseAction action)
+	{
+		if (CanSpendActionPoints(action))
+		{
+			SpendActionPoints(action.ActionPointsCost);
+			return true;
+		}
+		return false;
+	}
+
+	public bool CanSpendActionPoints(BaseAction action)
+	{
+		if (actionPoints >= action.ActionPointsCost)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	private void SpendActionPoints(int amount)
+	{
+		actionPoints -= amount;
+		OnActionPointsChanged?.Invoke(this, new ActionPointsChangedEventArgs { actionPoints = actionPoints });
+	}
+
+	public int ActionPoints => actionPoints;
 
 
 	public void OnSelected()
 	{
 		visualSelect.gameObject.SetActive(true);
+		cameraPortfolio.gameObject.SetActive(true);
 	}
 
 	public void OnDeselected()
 	{
 		visualSelect.gameObject.SetActive(false);
+		cameraPortfolio.gameObject.SetActive(false);
 	}
 
 }

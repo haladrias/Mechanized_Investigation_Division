@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 public class PlayerManager : MonoBehaviour
 {
 	public static PlayerManager Instance { get; private set; }
-	public event EventHandler OnSelectedUnitChanged;
+	public event EventHandler OnUnitSelected;
+	public event EventHandler OnUnitDeselected;
 	public event EventHandler<SelectedActionChangedEventArgs> OnSelectedActionChanged;
 	public class SelectedActionChangedEventArgs : EventArgs
 	{
@@ -36,7 +37,7 @@ public class PlayerManager : MonoBehaviour
 
 	private void OnEnable()
 	{
-		OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+		OnUnitSelected?.Invoke(this, EventArgs.Empty);
 		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
 	}
 
@@ -47,7 +48,11 @@ public class PlayerManager : MonoBehaviour
 		{
 			if (EventSystem.current.IsPointerOverGameObject()) return; // If mouse is over UI, return
 
-			if (selectedUnit != null) selectedUnit.OnDeselected();
+			if (selectedUnit != null)
+			{
+				OnUnitDeselected?.Invoke(this, EventArgs.Empty);
+				selectedUnit.OnDeselected();
+			}
 			selectedUnit = null; // Clear selected unit
 
 			// Raycast from mouse position to get unit
@@ -64,7 +69,7 @@ public class PlayerManager : MonoBehaviour
 
 			}
 
-			OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+			OnUnitSelected?.Invoke(this, EventArgs.Empty);
 		}
 
 		if (Input.GetMouseButtonDown(1)) // RMB
@@ -79,8 +84,9 @@ public class PlayerManager : MonoBehaviour
 
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
 					GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(targetPosition);
-					// selectedUnit.MoveAction.TakeAction(gridPosition, SetIsNotBusy);
-					SelectedAction.TakeAction(gridPosition, SetIsNotBusy);
+
+					if (selectedUnit.TrySpendActionPoints(SelectedAction))
+						SelectedAction.TakeAction(gridPosition, SetIsNotBusy);
 				}
 			}
 		}

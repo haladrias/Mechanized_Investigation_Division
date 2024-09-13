@@ -10,6 +10,9 @@ public class MechInfoUI : MonoBehaviour
 	[SerializeField] private Transform actionsContainer;
 	[SerializeField] private Transform actionButtonPrefab;
 	[SerializeField] private TextMeshProUGUI actionText;
+	[SerializeField] private TextMeshProUGUI actionPointsText;
+
+	private Unit currentUnit;
 	// [SerializeField] private Button takeActionButton;
 
 	private void Awake()
@@ -18,7 +21,8 @@ public class MechInfoUI : MonoBehaviour
 	}
 	private void Start()
 	{
-		PlayerManager.Instance.OnSelectedUnitChanged += Instance_OnSelectedUnitChanged;
+		PlayerManager.Instance.OnUnitSelected += Instance_OnSelectedUnit;
+		PlayerManager.Instance.OnUnitDeselected += OnUnitDeselectedHandler;
 		PlayerManager.Instance.OnSelectedActionChanged += Instance_OnSelectedActionChanged;
 		ClearActionButtons();
 		parentContainer.gameObject.SetActive(false); // Hide the container
@@ -28,6 +32,13 @@ public class MechInfoUI : MonoBehaviour
 		// 	Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
 
 		// });
+	}
+
+	private void OnUnitDeselectedHandler(object sender, EventArgs e)
+	{
+		Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
+
+		selectedUnit.OnActionPointsChanged -= SelectedUnit_OnActionPointsChanged;
 	}
 
 	private void Instance_OnSelectedActionChanged(object sender, PlayerManager.SelectedActionChangedEventArgs e)
@@ -40,9 +51,21 @@ public class MechInfoUI : MonoBehaviour
 		actionText.text = e.selectedAction.ToString();
 	}
 
-	private void Instance_OnSelectedUnitChanged(object sender, EventArgs e)
+	private void Instance_OnSelectedUnit(object sender, EventArgs e)
 	{
 		Toggle();
+		Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
+		if (selectedUnit != null)
+		{
+			actionPointsText.text = selectedUnit.ActionPoints.ToString();
+			selectedUnit.OnActionPointsChanged += SelectedUnit_OnActionPointsChanged;
+		}
+
+	}
+
+	private void SelectedUnit_OnActionPointsChanged(object sender, Unit.ActionPointsChangedEventArgs e)
+	{
+		actionPointsText.text = e.actionPoints.ToString();
 	}
 
 	private void Toggle()

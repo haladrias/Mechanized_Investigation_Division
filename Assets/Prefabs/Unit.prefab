@@ -417,6 +417,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitAnimator: {fileID: 598464746098953393}
   visualSelect: {fileID: 4874259618693459174}
+  cameraPortfolio: {fileID: 5257942891103169758}
+  actionPoints: 2
 --- !u!1 &1936770952789611976
 GameObject:
   m_ObjectHideFlags: 0
