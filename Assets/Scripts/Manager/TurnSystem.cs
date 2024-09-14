@@ -34,12 +34,13 @@ public class TurnSystem : MonoBehaviour
 	{
 		Debug.Log("TurnSystem Start");
 		EndRound();
-		EndTurn();
+
 	}
 
 	public void EndRound()
 	{
 		RoundNumber++;
+		EndTurn();
 		OnRoundChanged?.Invoke(this, EventArgs.Empty);
 	}
 

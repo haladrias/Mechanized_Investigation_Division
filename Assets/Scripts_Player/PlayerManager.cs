@@ -52,13 +52,15 @@ public class PlayerManager : MonoBehaviour
 	{
 		if (e.currentTurn == TurnSystem.TurnState.Player)
 		{
-			EnableControl();
-			turnUnit = null;
+			// Comment for now until AI is implemented
+			//EnableControl();
+			// turnUnit = null;
 		}
 		else
 		{
-			DisableControl();
+			//DisableControl();
 		}
+		turnUnit = null; // Here until AI is implemented
 	}
 
 	private void OnEnable()
@@ -110,7 +112,7 @@ public class PlayerManager : MonoBehaviour
 				{
 					if (turnUnit == null) // If no unit is selected, use the selected unit
 					{
-						Debug.Log($"Change turn unit");
+
 						turnUnit = selectedUnit; // Turn Unit will not be null until end of the turn
 						OnTurnUnitChanged?.Invoke(this, EventArgs.Empty);
 					}
@@ -136,7 +138,6 @@ public class PlayerManager : MonoBehaviour
 	{
 		IsEnabled = false;
 		SelectedAction = null;
-
 
 		if (selectedUnit != null)
 		{
