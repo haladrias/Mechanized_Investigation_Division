@@ -37,8 +37,8 @@ public class MechInfoUI : MonoBehaviour
 	private void OnUnitDeselectedHandler(object sender, EventArgs e)
 	{
 		Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
-
-		selectedUnit.OnActionPointsChanged -= SelectedUnit_OnActionPointsChanged;
+		if (selectedUnit != null)
+			selectedUnit.OnActionPointsChanged -= SelectedUnit_OnActionPointsChanged;
 	}
 
 	private void Instance_OnSelectedActionChanged(object sender, PlayerManager.SelectedActionChangedEventArgs e)

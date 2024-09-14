@@ -7,17 +7,26 @@ using UnityEngine.UI;
 
 public class TurnSystemUI : MonoBehaviour
 {
+	public TextMeshProUGUI RoundText;
 	public TextMeshProUGUI TurnText;
 	public Button endTurnButton;
 
 	private void OnEnable()
 	{
-		TurnSystem.Instance.OnTurnNumberChanged += UpdateTurnText;
+		Debug.Log("TurnSystemUI OnEnable");
+		TurnSystem.Instance.OnRoundChanged += UpdateRoundText;
+		TurnSystem.Instance.OnTurnChanged += UpdateTurnText;
 		endTurnButton.onClick.AddListener(() => TurnSystem.Instance.EndTurn());
 	}
 
-	private void UpdateTurnText(object sender, EventArgs e)
+	private void UpdateTurnText(object sender, TurnSystem.OnTurnChangedEventArgs e)
 	{
-		TurnText.text = $"Turn: {TurnSystem.Instance.TurnNumber}";
+		Debug.Log($"Current Turn: {e.currentTurn}");
+		TurnText.text = $"{e.currentTurn}";
+	}
+
+	private void UpdateRoundText(object sender, EventArgs e)
+	{
+		RoundText.text = $"{TurnSystem.Instance.RoundNumber}";
 	}
 }

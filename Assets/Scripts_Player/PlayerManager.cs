@@ -27,12 +27,33 @@ public class PlayerManager : MonoBehaviour
 	public Unit CurrentSelectedUnit => selectedUnit;
 	public BaseAction SelectedAction { get; private set; }
 
+	private bool IsEnabled;
+
 
 	private bool IsBusy;
 	private void Awake()
 	{
 		Instance = this;
 		IsBusy = false;
+		EnableControl();
+	}
+
+
+	private void Start()
+	{
+		TurnSystem.Instance.OnTurnChanged += OnTurnChanged;
+	}
+
+	private void OnTurnChanged(object sender, TurnSystem.OnTurnChangedEventArgs e)
+	{
+		if (e.currentTurn == TurnSystem.TurnState.Player)
+		{
+			EnableControl();
+		}
+		else
+		{
+			DisableControl();
+		}
 	}
 
 	private void OnEnable()
@@ -43,7 +64,7 @@ public class PlayerManager : MonoBehaviour
 
 	private void Update()
 	{
-
+		if (!IsEnabled) return;
 		if (Input.GetMouseButtonDown(0)) // LMB 
 		{
 			if (EventSystem.current.IsPointerOverGameObject()) return; // If mouse is over UI, return
@@ -92,6 +113,26 @@ public class PlayerManager : MonoBehaviour
 		}
 	}
 
+	public void EnableControl()
+	{
+		IsEnabled = true;
+	}
+
+	public void DisableControl()
+	{
+		IsEnabled = false;
+		SelectedAction = null;
+
+
+		if (selectedUnit != null)
+		{
+			OnUnitDeselected?.Invoke(this, EventArgs.Empty);
+			selectedUnit.OnDeselected();
+			selectedUnit = null;
+		}
+
+	}
+
 	public void SetIsBusy()
 	{
 		IsBusy = true;
@@ -104,28 +145,12 @@ public class PlayerManager : MonoBehaviour
 	}
 	public void SetSelectedAction(BaseAction action)
 	{
-		// if (SelectedAction != null)
-
-		// if (action == SelectedAction) return;
 		SelectedAction = action;
 		GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
-		// switch (SelectedAction)
-		// {
-		// 	case MoveAction moveAction:
-		// 		Debug.Log("Move Action Selected");
-		// 		break;
-		// 	case SpinAction spinAction:
-		// 		Debug.Log("Spin Action Selected");
-		// 		break;
-		// }
+
 		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
 	}
 
-	// public void TakeAction()
-	// {
-	// 	if (selectedAction == null) return;
 
-	// 	selectedAction.
-	// }
 
 }
