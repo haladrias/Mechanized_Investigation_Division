@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
 {
 
     public AudioMixer audioMixer;
+    public AudioManager audioManager;
 
     public TMPro.TMP_Dropdown resolutionDropdown;
 
@@ -54,14 +55,12 @@ public class MainMenu : MonoBehaviour
     }
     public void QuitGame()
     {
+
         Application.Quit();
     }
 
     public void SetVolume(float volume)
     {
-        Debug.Log(volume);
-        Debug.Log("Hello");
-
         audioMixer.SetFloat("volume", volume);
     }
 
