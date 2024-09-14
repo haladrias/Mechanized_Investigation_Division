@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
 	public static PlayerManager Instance { get; private set; }
 	public event EventHandler OnUnitSelected;
 	public event EventHandler OnUnitDeselected;
+	public event EventHandler OnTurnUnitChanged;
 	public event EventHandler<SelectedActionChangedEventArgs> OnSelectedActionChanged;
 	public class SelectedActionChangedEventArgs : EventArgs
 	{
@@ -23,6 +24,8 @@ public class PlayerManager : MonoBehaviour
 	public LayerMask unitLayerMask;
 	[SerializeField] private LayerMask mouseLayerMask;
 
+	[SerializeField] private Unit turnUnit;
+	public Unit TurnUnit => turnUnit;
 	private Unit selectedUnit;
 	public Unit CurrentSelectedUnit => selectedUnit;
 	public BaseAction SelectedAction { get; private set; }
@@ -42,6 +45,7 @@ public class PlayerManager : MonoBehaviour
 	private void Start()
 	{
 		TurnSystem.Instance.OnTurnChanged += OnTurnChanged;
+
 	}
 
 	private void OnTurnChanged(object sender, TurnSystem.OnTurnChangedEventArgs e)
@@ -49,6 +53,7 @@ public class PlayerManager : MonoBehaviour
 		if (e.currentTurn == TurnSystem.TurnState.Player)
 		{
 			EnableControl();
+			turnUnit = null;
 		}
 		else
 		{
@@ -80,6 +85,7 @@ public class PlayerManager : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, unitLayerMask))
 			{
+
 				if (!hit.transform.TryGetComponent<Unit>(out selectedUnit))
 				{
 					SelectedAction = null;
@@ -96,18 +102,26 @@ public class PlayerManager : MonoBehaviour
 		if (Input.GetMouseButtonDown(1)) // RMB
 		{
 			if (IsBusy) return;
-			SetIsBusy();
-			if (selectedUnit != null) // Move Unit to mouse position
+
+			if (selectedUnit != null) // When unit is selected, do an action upon RMB
 			{
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mouseLayerMask))
 				{
-
+					if (turnUnit == null) // If no unit is selected, use the selected unit
+					{
+						Debug.Log($"Change turn unit");
+						turnUnit = selectedUnit; // Turn Unit will not be null until end of the turn
+						OnTurnUnitChanged?.Invoke(this, EventArgs.Empty);
+					}
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
 					GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(targetPosition);
 
-					if (selectedUnit.TrySpendActionPoints(SelectedAction))
+					if (selectedUnit == turnUnit && turnUnit.TrySpendActionPoints(SelectedAction))
+					{
 						SelectedAction.TakeAction(gridPosition, SetIsNotBusy);
+						SetIsBusy();
+					}
 				}
 			}
 		}

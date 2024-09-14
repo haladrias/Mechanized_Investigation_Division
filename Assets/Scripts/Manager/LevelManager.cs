@@ -67,7 +67,6 @@ public class LevelManager : MonoBehaviour
 
 			// Add the column to the list of used columns
 			spawnedColumns.Add(column);
-			Debug.Log("Added Column: " + column);
 
 			// Set spawn position and instantiate the unit
 			GridPosition spawnPos = new GridPosition(column, startingRow);

@@ -23,16 +23,14 @@ public class MechInfoUI : MonoBehaviour
 	{
 		PlayerManager.Instance.OnUnitSelected += Instance_OnSelectedUnit;
 		PlayerManager.Instance.OnUnitDeselected += OnUnitDeselectedHandler;
+		// PlayerManager.Instance.OnTurnUnitChanged += Instance_OnTurnUnitChanged;
 		PlayerManager.Instance.OnSelectedActionChanged += Instance_OnSelectedActionChanged;
 		ClearActionButtons();
 		parentContainer.gameObject.SetActive(false); // Hide the container
 
-		// takeActionButton.onClick.AddListener(() =>
-		// {
-		// 	Unit selectedUnit = PlayerManager.Instance.CurrentSelectedUnit;
 
-		// });
 	}
+
 
 	private void OnUnitDeselectedHandler(object sender, EventArgs e)
 	{
@@ -79,8 +77,13 @@ public class MechInfoUI : MonoBehaviour
 		}
 
 		parentContainer.gameObject.SetActive(true);
+		if (PlayerManager.Instance.TurnUnit == null)
+			SpawnActionButtons(selectedUnit);
+		else if (PlayerManager.Instance.TurnUnit != null && selectedUnit == PlayerManager.Instance.TurnUnit)
+			SpawnActionButtons(selectedUnit);
+		else
+			ClearActionButtons();
 
-		SpawnActionButtons(selectedUnit);
 	}
 
 	private void SpawnActionButtons(Unit selectedUnit)
