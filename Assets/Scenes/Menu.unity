@@ -4312,7 +4312,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1282128304}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: SetFullscreen
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &962752129
 GameObject:
@@ -5707,6 +5719,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioMixer: {fileID: 24100000, guid: 7e82a04157127da479ee2dcf82246a5e, type: 2}
+  audioManager: {fileID: 2028264133}
   resolutionDropdown: {fileID: 43507248}
 --- !u!1 &1288852847
 GameObject:
@@ -6741,8 +6754,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 225fbfd36371f3447a557ab6362f9013, type: 2}
-  m_sharedMaterial: {fileID: 3260528190364745827, guid: 225fbfd36371f3447a557ab6362f9013, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 46ac50990b0cbf44e9c9df726a9f3559, type: 2}
+  m_sharedMaterial: {fileID: -1993848049495859594, guid: 46ac50990b0cbf44e9c9df726a9f3559, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7986,10 +7999,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f105034889c684d820f24edb5f6fbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sounds:
-  - clip: {fileID: 0}
+  sounds: []
+  currentplayingMusic:
+    name: 
+    clip: {fileID: 0}
     volume: 0
     pitch: 0
+    source: {fileID: 0}
+    music: 0
+    loop: 0
 --- !u!4 &2028264134
 Transform:
   m_ObjectHideFlags: 0
