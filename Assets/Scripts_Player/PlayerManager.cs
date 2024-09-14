@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
 	public static PlayerManager Instance { get; private set; }
 	public event EventHandler OnUnitSelected;
 	public event EventHandler OnUnitDeselected;
+	public event EventHandler OnTurnUnitChanged;
 	public event EventHandler<SelectedActionChangedEventArgs> OnSelectedActionChanged;
 	public class SelectedActionChangedEventArgs : EventArgs
 	{
@@ -23,9 +24,13 @@ public class PlayerManager : MonoBehaviour
 	public LayerMask unitLayerMask;
 	[SerializeField] private LayerMask mouseLayerMask;
 
+	[SerializeField] private Unit turnUnit;
+	public Unit TurnUnit => turnUnit;
 	private Unit selectedUnit;
 	public Unit CurrentSelectedUnit => selectedUnit;
 	public BaseAction SelectedAction { get; private set; }
+
+	private bool IsEnabled;
 
 
 	private bool IsBusy;
@@ -33,6 +38,29 @@ public class PlayerManager : MonoBehaviour
 	{
 		Instance = this;
 		IsBusy = false;
+		EnableControl();
+	}
+
+
+	private void Start()
+	{
+		TurnSystem.Instance.OnTurnChanged += OnTurnChanged;
+
+	}
+
+	private void OnTurnChanged(object sender, TurnSystem.OnTurnChangedEventArgs e)
+	{
+		if (e.currentTurn == TurnSystem.TurnState.Player)
+		{
+			// Comment for now until AI is implemented
+			//EnableControl();
+			// turnUnit = null;
+		}
+		else
+		{
+			//DisableControl();
+		}
+		turnUnit = null; // Here until AI is implemented
 	}
 
 	private void OnEnable()
@@ -43,7 +71,7 @@ public class PlayerManager : MonoBehaviour
 
 	private void Update()
 	{
-
+		if (!IsEnabled) return;
 		if (Input.GetMouseButtonDown(0)) // LMB 
 		{
 			if (EventSystem.current.IsPointerOverGameObject()) return; // If mouse is over UI, return
@@ -59,6 +87,7 @@ public class PlayerManager : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, unitLayerMask))
 			{
+
 				if (!hit.transform.TryGetComponent<Unit>(out selectedUnit))
 				{
 					SelectedAction = null;
@@ -75,21 +104,48 @@ public class PlayerManager : MonoBehaviour
 		if (Input.GetMouseButtonDown(1)) // RMB
 		{
 			if (IsBusy) return;
-			SetIsBusy();
-			if (selectedUnit != null) // Move Unit to mouse position
+
+			if (selectedUnit != null) // When unit is selected, do an action upon RMB
 			{
 				Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 				if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, mouseLayerMask))
 				{
+					if (turnUnit == null) // If no unit is selected, use the selected unit
+					{
 
+						turnUnit = selectedUnit; // Turn Unit will not be null until end of the turn
+						OnTurnUnitChanged?.Invoke(this, EventArgs.Empty);
+					}
 					Vector3 targetPosition = LevelGrid.Instance.GetWorldPosition(hit.point);
 					GridPosition gridPosition = LevelGrid.Instance.GetGridPosition(targetPosition);
 
-					if (selectedUnit.TrySpendActionPoints(SelectedAction))
+					if (selectedUnit == turnUnit && turnUnit.TrySpendActionPoints(SelectedAction))
+					{
 						SelectedAction.TakeAction(gridPosition, SetIsNotBusy);
+						SetIsBusy();
+					}
 				}
 			}
 		}
+	}
+
+	public void EnableControl()
+	{
+		IsEnabled = true;
+	}
+
+	public void DisableControl()
+	{
+		IsEnabled = false;
+		SelectedAction = null;
+
+		if (selectedUnit != null)
+		{
+			OnUnitDeselected?.Invoke(this, EventArgs.Empty);
+			selectedUnit.OnDeselected();
+			selectedUnit = null;
+		}
+
 	}
 
 	public void SetIsBusy()
@@ -104,28 +160,12 @@ public class PlayerManager : MonoBehaviour
 	}
 	public void SetSelectedAction(BaseAction action)
 	{
-		// if (SelectedAction != null)
-
-		// if (action == SelectedAction) return;
 		SelectedAction = action;
 		GridSystemVisual.Instance.ToggleGridVisual(action.ShowGrid);
-		// switch (SelectedAction)
-		// {
-		// 	case MoveAction moveAction:
-		// 		Debug.Log("Move Action Selected");
-		// 		break;
-		// 	case SpinAction spinAction:
-		// 		Debug.Log("Spin Action Selected");
-		// 		break;
-		// }
+
 		OnSelectedActionChanged?.Invoke(this, new SelectedActionChangedEventArgs { selectedAction = SelectedAction });
 	}
 
-	// public void TakeAction()
-	// {
-	// 	if (selectedAction == null) return;
 
-	// 	selectedAction.
-	// }
 
 }

@@ -77,6 +77,12 @@ public class Unit : MonoBehaviour
 		OnActionPointsChanged?.Invoke(this, new ActionPointsChangedEventArgs { actionPoints = actionPoints });
 	}
 
+	public void RefreshActionPoints()
+	{
+		actionPoints = 2;
+		OnActionPointsChanged?.Invoke(this, new ActionPointsChangedEventArgs { actionPoints = actionPoints });
+	}
+
 	public int ActionPoints => actionPoints;
 
 
