@@ -1,0 +1,41 @@
+Armadura Stats
+
+HP - (Hit Points, when 0 = armadura defeat)
+StPw – (Short for Stopping Power, Weapon Damage, value = damage dealt)
+Acc – (Accuracy, value = chance to hit)
+Avo – (Avoidance, value = chance to dodge)
+Tre – (Tread, Number of square an armadura can move)
+Arm – (Armor, value = damage reduced)
+
+=======================
+
+Combat Math – to hit/miss
+
+Primary pivot value = 10  ( if above 10 = hits, Below 10 = miss)
+
+combat is determined by using random number between 1 and 20
+
+add acc to the random number, then subtract the opponents avo 
+
+Example:
+
+	Player
+	Acc 4, Avo 3  
+	
+	vs
+	
+	OpFor
+	Acc 2, Avo 2
+
+player gets a 12 then adds acc (4) to get 16, then subtracts OpFor’s Avo (2), leaving player with 14;  Since this is above 10, player hits.
+
+OpFor gets a 10 then adds its Acc (2) to get a 12, then subtracts the players Avo (3); leaving OpFor with 9.  Since this is less than 10, OpFor misses.
+
+=======================================
+
+Formula = Random number (1-20) + Attackers Acc – Opponents Avo, > 10 (50%) = hit; < 10 = miss
+
+======================================
+Combat Math – Damage
+
+StPw – Arm = Damage Dealt/Recieved
